@@ -223,7 +223,7 @@ void OzAppsRightsAnalyzer::closeEvent(QCloseEvent* event)
 {
     QMessageBox msgBox;
     msgBox.setText( trUtf8("-- Fermeture de l'application --") );
-    msgBox.setInformativeText( trUtf8("Etes-vous sûr de vouloir quitter ?") );
+    msgBox.setInformativeText( trUtf8("Mais pourquoi ! Pourquoi partir maintenant ? Sûr ?") );
     msgBox.setStandardButtons(QMessageBox::Yes | QMessageBox::No);
     msgBox.setDefaultButton(QMessageBox::No);
     msgBox.setIconPixmap( QPixmap("icons/Warning_64_64.png") );
@@ -466,11 +466,25 @@ void OzAppsRightsAnalyzer::updateRecursive(QTreeWidgetItem* group,
 
         QMap<QString,QString>::iterator it;
         for(it=m_ozAppColor.begin();it!=m_ozAppColor.end();it++)
-            if( groupList[n].element.id.contains(it.key()) )
+        {
+            QString id = groupList[n].element.id;
+            QStringList l = id.split("_");
+
+            if( id.contains("CORE") )
+            {
+                for(int i=0;i<l.size();i++)
+                    if( l[i] == it.key() )
+                    {
+                        item->setBackgroundColor(0,QColor(it.value()));
+                        break;
+                    }
+            }
+            else if( l.size()>=1 && l[0]==it.key() )
             {
                 item->setBackgroundColor(0,QColor(it.value()));
                 break;
             }
+        }
 
         for(int i=0;i<groupList[n].element.profils.size();i++)
         {
