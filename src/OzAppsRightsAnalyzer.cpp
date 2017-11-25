@@ -223,7 +223,7 @@ void OzAppsRightsAnalyzer::closeEvent(QCloseEvent* event)
 {
     QMessageBox msgBox;
     msgBox.setText( trUtf8("-- Fermeture de l'application --") );
-    msgBox.setInformativeText( trUtf8("Etes-vous sûr de vouloire quitter ?") );
+    msgBox.setInformativeText( trUtf8("Etes-vous sûr de vouloir quitter ?") );
     msgBox.setStandardButtons(QMessageBox::Yes | QMessageBox::No);
     msgBox.setDefaultButton(QMessageBox::No);
     msgBox.setIconPixmap( QPixmap("icons/Warning_64_64.png") );
