@@ -87,3 +87,6 @@ $RECYCLE.BIN/
 
 # Windows shortcuts
 *.lnk
+Application
+build_debug
+build_release
