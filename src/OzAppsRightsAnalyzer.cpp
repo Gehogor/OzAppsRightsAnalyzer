@@ -223,7 +223,7 @@ void OzAppsRightsAnalyzer::closeEvent(QCloseEvent* event)
 {
     QMessageBox msgBox;
     msgBox.setText( trUtf8("-- Fermeture de l'application --") );
-    msgBox.setInformativeText( trUtf8("Mais pourquoi ! Pourquoi partir maintenant ? Sûr ?") );
+    msgBox.setInformativeText( trUtf8("Mais pourquoi ? Pourquoi partir maintenant ? Sûr ?") );
     msgBox.setStandardButtons(QMessageBox::Yes | QMessageBox::No);
     msgBox.setDefaultButton(QMessageBox::No);
     msgBox.setIconPixmap( QPixmap("icons/Warning_64_64.png") );
