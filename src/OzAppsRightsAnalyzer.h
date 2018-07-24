@@ -36,10 +36,13 @@ private slots:
     void doWhenOpenFileProfils();
     void doWhenExportCSV();
     void doWhenSearch();
+    void doWhenSearchFromItem();
     void doWhenCollapseAll();
     void doWhenAddColor();
     void doWhenRemoveColor();
     void doWhenColorHasChanged(const QColor& color,const QString& text);
+    void doWhenMenu(const QPoint& pos);
+    void doWhenCopyText();
 
 private:
     // Event methods
@@ -61,6 +64,7 @@ private:
     Ui::OzAppsRightsAnalyzer* ui;
     RightsAnalyzer m_analyzer;
     QMap<QString,QString> m_ozAppColor;
+    QString m_keySearched;
 };
 
 #endif /* _OZAPPSRIGHTSANALYZER_H_ */

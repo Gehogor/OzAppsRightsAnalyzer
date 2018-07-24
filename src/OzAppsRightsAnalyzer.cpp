@@ -3,6 +3,7 @@
 #define _OZAPPSRIGHTSANALYZER_CPP_
 
 // Qt
+#include <QClipboard>
 #include <QCloseEvent>
 #include <QDate>
 #include <QFileDialog>
@@ -161,6 +162,14 @@ void OzAppsRightsAnalyzer::doWhenSearch()
     }
 }
 
+void OzAppsRightsAnalyzer::doWhenSearchFromItem()
+{
+    searchAndExpand(ui->m_treeRC,m_keySearched);
+    searchAndExpand(ui->m_treeRCG,m_keySearched);
+    searchAndExpand(ui->m_treeRRG,m_keySearched);
+    searchAndExpand(ui->m_treePR,m_keySearched);
+}
+
 void OzAppsRightsAnalyzer::doWhenCollapseAll()
 {
     ui->m_treeRC->collapseAll();
@@ -217,13 +226,79 @@ void OzAppsRightsAnalyzer::doWhenColorHasChanged(const QColor& color,
     updateAll();
 }
 
+#include <qdebug.h>
+void OzAppsRightsAnalyzer::doWhenMenu(const QPoint& pos)
+{
+    QTreeWidgetItem* item = ui->m_treeRC->itemAt( pos );
+    if( item != 0 && ui->m_treeRC->isVisible() )
+    {
+        qDebug()<<pos<<item->text(0);
+        m_keySearched = item->text(0);
+    }
+
+    item = ui->m_treeRCG->itemAt( pos );
+    if( item != 0 && ui->m_treeRCG->isVisible() )
+    {
+        qDebug()<<pos<<item->text(0);
+        m_keySearched = item->text(0);
+    }
+
+    item = ui->m_treeRRG->itemAt( pos );
+    if( item != 0 && ui->m_treeRRG->isVisible() )
+    {
+        qDebug()<<pos<<item->text(0);
+        m_keySearched = item->text(0);
+    }
+
+    item = ui->m_treePR->itemAt( pos );
+    if( item != 0 && ui->m_treePR->isVisible() )
+    {
+        qDebug()<<pos<<item->text(0);
+        m_keySearched = item->text(0);
+    }
+
+    QAction* search = new QAction(QIcon("icons/Search_16_16.png"),
+                                  tr("&Chercher"),
+                                  this);
+    search->setStatusTip(tr("Cherche toutes les clefs correspondantes."));
+    connect(search,SIGNAL(triggered()),this,SLOT(doWhenSearchFromItem()));
+
+    QAction* copy = new QAction(QIcon("icons/Copy_16_16.png"),
+                                  tr("&Copier"),
+                                  this);
+    copy->setStatusTip(tr("Copie la clef correspondante."));
+    connect(copy,SIGNAL(triggered()),this,SLOT(doWhenCopyText()));
+
+    QMenu menu(this);
+    menu.addAction(search);
+    menu.addAction(copy);
+
+    if( ui->m_treeRC->isVisible() )
+        menu.exec( ui->m_treeRC->mapToGlobal(pos) );
+    else if( ui->m_treeRCG->isVisible() )
+        menu.exec( ui->m_treeRCG->mapToGlobal(pos) );
+    else if( ui->m_treeRRG->isVisible() )
+        menu.exec( ui->m_treeRRG->mapToGlobal(pos) );
+    else if( ui->m_treePR->isVisible() )
+        menu.exec( ui->m_treePR->mapToGlobal(pos) );
+}
+
+void OzAppsRightsAnalyzer::doWhenCopyText()
+{
+    QClipboard* clipboard = QApplication::clipboard();
+
+    QMimeData *data = new QMimeData;
+    data->setText( m_keySearched );
+    clipboard->setMimeData(data, QClipboard::Clipboard);
+}
+
 
 // Private -------------------------------------------------------------------//
 void OzAppsRightsAnalyzer::closeEvent(QCloseEvent* event)
 {
     QMessageBox msgBox;
     msgBox.setText( trUtf8("-- Fermeture de l'application --") );
-    msgBox.setInformativeText( trUtf8("Mais pourquoi ? Pourquoi partir maintenant ? Sûr ?") );
+    msgBox.setInformativeText( trUtf8("Etes-vous sûr ?") );
     msgBox.setStandardButtons(QMessageBox::Yes | QMessageBox::No);
     msgBox.setDefaultButton(QMessageBox::No);
     msgBox.setIconPixmap( QPixmap("icons/Warning_64_64.png") );
@@ -316,6 +391,9 @@ void OzAppsRightsAnalyzer::initializationOfTree()
     header->setText(2,"Description");
     header->setText(3,"Variable");
     ui->m_treeRC->setHeaderItem(header);
+    ui->m_treeRC->setContextMenuPolicy(Qt::CustomContextMenu);
+    connect(ui->m_treeRC,SIGNAL(customContextMenuRequested(QPoint)),
+            this,SLOT(doWhenMenu(QPoint)));
 
     ui->m_treeRCG->setColumnCount(4);
     header = new QTreeWidgetItem();
@@ -324,6 +402,9 @@ void OzAppsRightsAnalyzer::initializationOfTree()
     header->setText(2,"Description");
     header->setText(3,"Variable");
     ui->m_treeRCG->setHeaderItem(header);
+    ui->m_treeRCG->setContextMenuPolicy(Qt::CustomContextMenu);
+    connect(ui->m_treeRCG,SIGNAL(customContextMenuRequested(QPoint)),
+            this,SLOT(doWhenMenu(QPoint)));
 
     ui->m_treeRRG->setColumnCount(4);
     header = new QTreeWidgetItem();
@@ -332,6 +413,9 @@ void OzAppsRightsAnalyzer::initializationOfTree()
     header->setText(2,"Description");
     header->setText(3,"Variable");
     ui->m_treeRRG->setHeaderItem(header);
+    ui->m_treeRRG->setContextMenuPolicy(Qt::CustomContextMenu);
+    connect(ui->m_treeRRG,SIGNAL(customContextMenuRequested(QPoint)),
+            this,SLOT(doWhenMenu(QPoint)));
 
     ui->m_treePR->setColumnCount(4);
     header = new QTreeWidgetItem();
@@ -340,6 +424,9 @@ void OzAppsRightsAnalyzer::initializationOfTree()
     header->setText(2,"Description");
     header->setText(3,"Variable");
     ui->m_treePR->setHeaderItem(header);
+    ui->m_treePR->setContextMenuPolicy(Qt::CustomContextMenu);
+    connect(ui->m_treePR,SIGNAL(customContextMenuRequested(QPoint)),
+            this,SLOT(doWhenMenu(QPoint)));
 }
 
 void OzAppsRightsAnalyzer::initializationOfColor()
