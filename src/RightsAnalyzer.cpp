@@ -28,7 +28,7 @@ void RightsAnalyzer::getRights(QTextStream* stream)
                 m_rightGroup.append( object );
 
         if( line.contains("RoleDTO") && !line.contains("List") )
-            if( classToGroupFromStartLine(line,stream,'(',')',object) )
+            if( classToGroupFromStartLine(line,stream,'{','}',object) )
                 m_roleGroup.append( object );
     }
     while( !line.isNull() );
